@@ -1,0 +1,88 @@
+/* Mobile-first responsive design */
+:root {
+  --xmum-blue: #1976D2;
+  --xmum-red: #D32F2F;
+  --xmum-gold: #FFC107;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Responsive typography */
+@media (min-width: 600px) {
+  html { font-size: 15px; }
+}
+
+@media (min-width: 960px) {
+  html { font-size: 16px; }
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.p-4 { padding: 1rem; }
+
+/* FullCalendar mobile optimization */
+.fc .fc-toolbar {
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .fc .fc-toolbar {
+    flex-direction: row;
+    padding: 1rem;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Vuetify overrides for mobile */
+.v-card {
+  border-radius: 8px;
+}
+
+@media (max-width: 599px) {
+  .v-card {
+    margin: 0.5rem;
+    border-radius: 6px;
+  }
+}
+
+/* Animation for notifications */
+.notification-enter-active,
+.notification-leave-active {
+  transition: all 0.3s ease;
+}
+
+.notification-enter-from,
+.notification-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
