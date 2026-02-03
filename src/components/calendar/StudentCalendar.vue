@@ -6,11 +6,25 @@
       <div class="text-grey mt-4">Loading timetable...</div>
     </div>
     
+    <!-- Error State -->
+    <div v-else-if="lessonStore.error" class="text-center py-12">
+      <v-alert type="error" variant="tonal" class="mb-4">
+        <div class="font-weight-bold">Failed to load timetable</div>
+        <div class="text-caption mt-2">{{ lessonStore.error }}</div>
+      </v-alert>
+      <v-btn @click="loadLessons" color="primary">
+        Try Again
+      </v-btn>
+    </div>
+    
     <!-- Empty State -->
     <div v-else-if="lessonStore.lessons.length === 0" class="text-center py-12">
       <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-calendar-blank</v-icon>
       <h3 class="text-h6 mb-2">No classes scheduled</h3>
       <p class="text-grey">Your timetable is currently empty.</p>
+      <v-btn @click="loadLessons" color="primary" class="mt-4">
+        Refresh
+      </v-btn>
     </div>
     
     <!-- Calendar Container -->
@@ -59,41 +73,55 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useLessonStore } from '@/stores/lesson'
-
-// Import FullCalendar
-import FullCalendar from '@fullcalendar/vue3'
+import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
 const lessonStore = useLessonStore()
 const calendarRef = ref<HTMLElement>()
-let calendar: any = null
+let calendar: Calendar | null = null
 const currentDate = ref('')
 
 onMounted(async () => {
+  console.log('StudentCalendar: Component mounted')
   await loadLessons()
-  await nextTick() // Wait for DOM to be ready
+  await nextTick()
   initCalendar()
 })
 
 onUnmounted(() => {
   if (calendar) {
     calendar.destroy()
+    calendar = null
   }
 })
 
+// Watch for changes in lessons array and reinitialize calendar
+watch(
+  () => lessonStore.lessons.length,
+  async () => {
+    console.log('StudentCalendar: Lessons changed, reinitializing calendar')
+    await nextTick()
+    initCalendar()
+  }
+)
+
 async function loadLessons() {
   try {
+    console.log('StudentCalendar: Loading lessons...')
     await lessonStore.fetchLessons()
+    console.log('StudentCalendar: Loaded', lessonStore.lessons.length, 'lessons')
   } catch (err) {
-    console.error('Failed to load lessons:', err)
+    console.error('StudentCalendar: Failed to load lessons:', err)
   }
 }
 
 function initCalendar() {
-  if (!calendarRef.value) return
+  if (!calendarRef.value) {
+    console.error('StudentCalendar: Calendar ref not available')
+    return
+  }
   
-  // Clear any existing calendar
   if (calendar) {
     calendar.destroy()
   }
@@ -113,36 +141,41 @@ function initCalendar() {
     textColor: 'white'
   }))
 
-  console.log('Loading calendar with', lessons.length, 'lessons')
-  console.log('Lessons:', lessons)
+  console.log('StudentCalendar: Initializing calendar with', lessons.length, 'events')
 
-  // @ts-ignore - FullCalendar types
-  calendar = new FullCalendar.Calendar(calendarRef.value, {
-    plugins: [dayGridPlugin, timeGridPlugin],
-    initialView: 'timeGridWeek',
-    headerToolbar: false, // Using our custom toolbar
-    height: 'auto',
-    events: lessons,
-    eventTimeFormat: {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    },
-    slotMinTime: '07:00:00',
-    slotMaxTime: '22:00:00',
-    allDaySlot: false,
-    nowIndicator: true,
-    navLinks: true,
-    datesSet: function(info: any) {
-      currentDate.value = info.view.title
-    },
-    eventClick: function(info: any) {
-      showLessonDetails(info.event)
+  try {
+    const options: any = {
+      plugins: [dayGridPlugin, timeGridPlugin],
+      initialView: 'timeGridWeek',
+      headerToolbar: false,
+      height: 'auto',
+      events: lessons,
+      eventTimeFormat: {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      },
+      slotMinTime: '07:00:00',
+      slotMaxTime: '22:00:00',
+      allDaySlot: false,
+      firstDay: 1,
+      nowIndicator: true,
+      navLinks: true,
+      datesSet: function(info: any) {
+        currentDate.value = info.view.title
+      },
+      eventClick: function(info: any) {
+        showLessonDetails(info.event)
+      }
     }
-  })
+    calendar = new Calendar(calendarRef.value, options)
 
-  calendar.render()
-  updateCurrentDate()
+    calendar.render()
+    updateCurrentDate()
+    console.log('StudentCalendar: Calendar rendered successfully')
+  } catch (err) {
+    console.error('StudentCalendar: Error initializing calendar:', err)
+  }
 }
 
 function updateCurrentDate() {
@@ -153,10 +186,10 @@ function updateCurrentDate() {
 
 function getEventColor(lessonType: string): string {
   switch (lessonType) {
-    case 'LECTURE': return '#1976D2' // Blue
-    case 'TUTORIAL': return '#4CAF50' // Green
-    case 'LAB': return '#FF9800' // Orange
-    default: return '#9C27B0' // Purple
+    case 'LECTURE': return '#1976D2'
+    case 'TUTORIAL': return '#4CAF50'
+    case 'LAB': return '#FF9800'
+    default: return '#9C27B0'
   }
 }
 
@@ -201,10 +234,8 @@ function next() {
   }
 }
 
-// Watch for lesson changes and update calendar
 watch(() => lessonStore.lessons, () => {
   if (calendar) {
-    // Remove all events and add new ones
     calendar.removeAllEvents()
     
     const lessons = lessonStore.lessons.map(lesson => ({
@@ -233,7 +264,7 @@ watch(() => lessonStore.lessons, () => {
   padding: 16px;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {

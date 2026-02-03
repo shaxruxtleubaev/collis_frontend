@@ -17,13 +17,17 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
-          primary: '#1976D2', // Xiamen University blue
-          secondary: '#424242',
-          accent: '#82B1FF',
-          error: '#FF5252',
-          info: '#2196F3',
-          success: '#4CAF50',
-          warning: '#FFC107'
+          primary: '#2563EB',        // Modern blue
+          secondary: '#64748B',      // Slate
+          accent: '#3B82F6',         // Light blue
+          surface: '#FFFFFF',
+          background: '#F8FAFC',     // Very light blue-gray
+          error: '#EF4444',
+          warning: '#F59E0B',
+          info: '#3B82F6',
+          success: '#10B981',
+          'surface-dim': '#F1F5F9',
+          'surface-light': '#E2E8F0'
         }
       }
     }

@@ -7,15 +7,37 @@ export const useLessonStore = defineStore('lesson', () => {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
+  function loadFromStorage() {
+    const storedLessons = localStorage.getItem('lessons')
+    if (storedLessons) {
+      try {
+        lessons.value = JSON.parse(storedLessons)
+        console.log('Lesson Store: Loaded', lessons.value.length, 'lessons from storage')
+      } catch {
+        localStorage.removeItem('lessons')
+      }
+    }
+  }
+
+  function saveToStorage() {
+    localStorage.setItem('lessons', JSON.stringify(lessons.value))
+  }
+
   async function fetchLessons() {
     isLoading.value = true
     error.value = null
     
     try {
+      console.log('Lesson Store: Fetching lessons...')
       lessons.value = await lessonApi.getLessons()
+      saveToStorage()
+      console.log('Lesson Store: Successfully loaded', lessons.value.length, 'lessons')
       return lessons.value
     } catch (err: any) {
-      error.value = err.message || 'Failed to load timetable'
+      const errorMsg = err.response?.data?.detail || err.message || 'Failed to load timetable'
+      error.value = errorMsg
+      console.error('Lesson Store: Error -', errorMsg)
+      console.error('Lesson Store: Full error:', err)
       throw err
     } finally {
       isLoading.value = false
@@ -44,6 +66,9 @@ export const useLessonStore = defineStore('lesson', () => {
     return lessons.value.filter(lesson => lesson.date === date)
       .sort((a, b) => a.starting_time.localeCompare(b.starting_time))
   }
+
+  // Load from storage on store creation
+  loadFromStorage()
 
   return {
     lessons,

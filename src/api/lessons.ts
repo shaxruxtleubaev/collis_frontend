@@ -33,11 +33,18 @@ export const lessonApi = {
     
     try {
       const response = await apiClient.get<PaginatedResponse<Lesson>>('/lessons/')
+      console.log('API: Full response:', response)
+      console.log('API: Response status:', response.status)
       console.log('API: Received', response.data.results.length, 'lessons')
       console.log('API: Lessons data:', response.data.results)
+      console.log('API: Full response data:', response.data)
       return response.data.results
-    } catch (error) {
+    } catch (error: any) {
       console.error('API: Error fetching lessons:', error)
+      console.error('API: Error response:', error.response)
+      console.error('API: Error message:', error.message)
+      console.error('API: Error status:', error.response?.status)
+      console.error('API: Error data:', error.response?.data)
       throw error
     }
   },
