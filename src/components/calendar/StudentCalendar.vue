@@ -234,13 +234,24 @@ function next() {
   }
 }
 
+// Get lesson title - shortened for mobile
+function getLessonTitle(lesson: any, isMobile: boolean) {
+  if (!isMobile) {
+    return `${lesson.course_code} - ${lesson.lesson_type}`
+  }
+  // Mobile: shorten to "CODE - (X)" format
+  const typeShort = (lesson.lesson_type || '').charAt(0).toUpperCase()
+  return `${lesson.course_code} - (${typeShort})`
+}
+
 watch(() => lessonStore.lessons, () => {
   if (calendar) {
     calendar.removeAllEvents()
     
+    const isMobile = window.innerWidth <= 768
     const lessons = lessonStore.lessons.map(lesson => ({
       id: String(lesson.id),
-      title: `${lesson.course_code} - ${lesson.lesson_type}`,
+      title: getLessonTitle(lesson, isMobile),
       start: `${lesson.date}T${lesson.starting_time}`,
       end: `${lesson.date}T${lesson.ending_time}`,
       extendedProps: {
@@ -270,7 +281,10 @@ watch(() => lessonStore.lessons, () => {
 @media (max-width: 768px) {
   .calendar-container {
     min-height: 320px;
-    padding: 8px;
+    padding: 4px;
+    margin: 0 -8px;
+    border-radius: 0;
+    box-shadow: none;
   }
 }
 
@@ -285,6 +299,16 @@ watch(() => lessonStore.lessons, () => {
 :deep(.fc-event-title) {
   font-weight: 500;
   padding: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  :deep(.fc-event-title) {
+    font-size: 0.75rem;
+  }
 }
 
 :deep(.fc-timegrid-slot) {

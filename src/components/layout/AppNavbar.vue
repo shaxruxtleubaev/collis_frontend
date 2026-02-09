@@ -1,33 +1,33 @@
 <template>
-  <!-- Mobile Navigation Drawer (Outside app-bar) -->
+  <!-- Mobile Navigation Drawer (Opens from right) -->
   <v-navigation-drawer
     v-model="drawer"
     temporary
-    location="left"
+    location="right"
     width="250"
   >
     <v-list>
-      <v-list-item
-        v-for="item in navItems"
-        :key="item.title"
-        :to="item.to"
-        @click="drawer = false"
-        active-color="primary"
-      >
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
+      <v-list-item to="/" @click="drawer = false">
+        <v-list-item-title>🏠 Home</v-list-item-title>
+      </v-list-item>
+      <v-list-item to="/timetable" @click="drawer = false">
+        <v-list-item-title>📅 Timetable</v-list-item-title>
+      </v-list-item>
+      <v-list-item to="/notification" @click="drawer = false" v-if="authStore.isAuthenticated">
+        <v-list-item-title>🔔 Notifications</v-list-item-title>
+      </v-list-item>
+      <v-divider v-if="authStore.isAuthenticated" />
+      <v-list-item to="/profile" @click="drawer = false" v-if="authStore.isAuthenticated">
+        <v-list-item-title>👤 My Profile</v-list-item-title>
+      </v-list-item>
+      <v-list-item @click="logout" v-if="authStore.isAuthenticated">
+        <v-list-item-title>🚪 Logout</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 
   <v-app-bar :elevation="2" color="surface" class="navbar-custom">
-    <!-- Mobile menu button -->
-    <v-app-bar-nav-icon 
-      v-if="isMobile" 
-      @click="drawer = !drawer"
-      color="primary"
-    />
-    
-    <!-- Logo/Title (clickable home link) -->
+    <!-- Mobile: Logo on left -->
     <router-link to="/" class="logo-link">
       <v-toolbar-title class="d-flex align-center logo-section">
         <img
@@ -61,9 +61,9 @@
       </v-btn>
     </div>
     
-    <!-- Notifications Bell -->
+    <!-- Notifications Bell (Desktop only) -->
     <v-btn
-      v-if="authStore.isAuthenticated"
+      v-if="authStore.isAuthenticated && !isMobile"
       to="/notification"
       icon
       color="primary"
@@ -75,8 +75,8 @@
       </v-badge>
     </v-btn>
     
-    <!-- User Menu -->
-    <v-menu v-if="authStore.user">
+    <!-- Desktop User Menu -->
+    <v-menu v-if="authStore.user && !isMobile">
       <template v-slot:activator="{ props }">
         <v-btn icon v-bind="props">
           <v-avatar size="36" color="primary">
@@ -103,6 +103,17 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    
+    <!-- Mobile: Hamburger Menu -->
+    <v-btn
+      v-if="isMobile"
+      @click="drawer = !drawer"
+      icon
+      color="primary"
+      class="mx-1"
+    >
+      <span style="font-size: 1.5rem;">☰</span>
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -126,11 +137,6 @@ const unreadCount = computed(() => {
   }
   return 0
 })
-
-const navItems = [
-  { title: '🏠 Home', to: { name: 'home' } },
-  { title: '📅 Timetable', to: { name: 'timetable' } },
-]
 
 const userInitials = computed(() => {
   if (!authStore.user?.fullname) return '?'
@@ -160,7 +166,13 @@ function logout() {
   align-items: center;
   cursor: pointer;
   transition: opacity 250ms ease;
-  margin-left: 2rem;
+  margin-left: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .logo-link {
+    margin-left: 0.5rem;
+  }
 }
 
 .logo-link:hover {
@@ -174,6 +186,12 @@ function logout() {
   white-space: nowrap;
   display: flex;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .navbar-title {
+    font-size: 0.85rem;
+  }
 }
 
 .navbar-logo {
