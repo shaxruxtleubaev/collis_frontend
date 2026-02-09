@@ -14,9 +14,6 @@
         @click="drawer = false"
         active-color="primary"
       >
-        <template v-slot:prepend>
-          <v-icon>{{ item.icon }}</v-icon>
-        </template>
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -52,8 +49,7 @@
         color="primary"
         class="nav-btn"
       >
-        <v-icon start>mdi-home</v-icon>
-        Home
+        🏠 Home
       </v-btn>
       <v-btn 
         to="/timetable"
@@ -61,8 +57,7 @@
         color="primary"
         class="nav-btn"
       >
-        <v-icon start>mdi-calendar</v-icon>
-        Timetable
+        📅 Timetable
       </v-btn>
     </div>
     
@@ -76,7 +71,7 @@
       title="View notifications"
     >
       <v-badge :content="unreadCount" :value="unreadCount > 0" color="error" overlap>
-        <v-icon>mdi-bell</v-icon>
+        <span style="font-size: 1.5rem;">🔔</span>
       </v-badge>
     </v-btn>
     
@@ -93,7 +88,7 @@
       <v-list>
         <v-list-item to="/profile">
           <template v-slot:prepend>
-            <v-icon>mdi-account</v-icon>
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">👤</span>
           </template>
           <v-list-item-title>My Profile</v-list-item-title>
         </v-list-item>
@@ -102,7 +97,7 @@
         
         <v-list-item @click="logout">
           <template v-slot:prepend>
-            <v-icon>mdi-logout</v-icon>
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚪</span>
           </template>
           <v-list-item-title>Logout</v-list-item-title>
         </v-list-item>
@@ -133,8 +128,8 @@ const unreadCount = computed(() => {
 })
 
 const navItems = [
-  { title: 'Home', icon: 'mdi-home', to: { name: 'home' } },
-  { title: 'Timetable', icon: 'mdi-calendar', to: { name: 'timetable' } },
+  { title: '🏠 Home', to: { name: 'home' } },
+  { title: '📅 Timetable', to: { name: 'timetable' } },
 ]
 
 const userInitials = computed(() => {
@@ -165,6 +160,7 @@ function logout() {
   align-items: center;
   cursor: pointer;
   transition: opacity 250ms ease;
+  margin-left: 2rem;
 }
 
 .logo-link:hover {
@@ -217,5 +213,13 @@ function logout() {
 
 :deep(.v-navigation-drawer) {
   z-index: 1000 !important;
+}
+
+:deep(.v-badge) {
+  z-index: 10 !important;
+}
+
+:deep(.v-btn) {
+  min-width: auto !important;
 }
 </style>

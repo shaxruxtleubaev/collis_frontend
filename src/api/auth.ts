@@ -25,6 +25,7 @@ export interface UserProfile {
   user_type_display: string
   fullname: string
   user_id: string
+  group_name?: string
 }
 
 export const authApi = {

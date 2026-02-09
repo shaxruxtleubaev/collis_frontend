@@ -51,7 +51,7 @@
             @click="prev"
             :disabled="lessonStore.isLoading"
           >
-            <v-icon>mdi-chevron-left</v-icon>
+            <span style="font-size: 1.5rem;">⬅️</span>
           </v-btn>
           
           <v-btn 
@@ -59,7 +59,7 @@
             @click="next"
             :disabled="lessonStore.isLoading"
           >
-            <v-icon>mdi-chevron-right</v-icon>
+            <span style="font-size: 1.5rem;">➡️</span>
           </v-btn>
         </div>
       </div>
@@ -260,7 +260,7 @@ watch(() => lessonStore.lessons, () => {
 
 <style scoped>
 .calendar-container {
-  min-height: 500px;
+  min-height: 400px;
   padding: 16px;
   background: white;
   border-radius: 8px;
@@ -269,7 +269,7 @@ watch(() => lessonStore.lessons, () => {
 
 @media (max-width: 768px) {
   .calendar-container {
-    min-height: 400px;
+    min-height: 320px;
     padding: 8px;
   }
 }
@@ -288,7 +288,7 @@ watch(() => lessonStore.lessons, () => {
 }
 
 :deep(.fc-timegrid-slot) {
-  height: 60px !important;
+  height: 48px !important;
 }
 
 :deep(.fc-toolbar) {

@@ -11,15 +11,6 @@
               {{ currentWeek }}
             </p>
           </div>
-          <v-btn
-            color="primary"
-            prepend-icon="mdi-refresh"
-            @click="refreshTimetable"
-            :loading="lessonStore.isLoading"
-            size="large"
-          >
-            Refresh Schedule
-          </v-btn>
         </div>
       </div>
 
