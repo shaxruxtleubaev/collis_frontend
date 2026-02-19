@@ -43,8 +43,7 @@ export const notificationApi = {
   },
 
   async markAsRead(id: number): Promise<void> {
-    // If API supports marking as read, implement here
-    // For now, we'll just filter client-side
-    console.log(`Marking notification ${id} as read`)
+    // Placeholder - notifications use is_sent field
+    console.log(`Notification ${id} viewed`)
   }
 }

@@ -35,7 +35,7 @@
           alt="XMUM Logo"
           class="navbar-logo mr-3"
         />
-        <span class="font-weight-bold navbar-title">ColliS Student Portal</span>
+        <span class="font-weight-bold navbar-title">Student Portal</span>
       </v-toolbar-title>
     </router-link>
     
