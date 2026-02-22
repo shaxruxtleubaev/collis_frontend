@@ -17,8 +17,8 @@
               <div class="logo-circle">
                 <v-icon size="64" color="primary">mdi-school</v-icon>
               </div>
-              <h1 class="text-h5 font-weight-600 mt-4">ColliS Portal</h1>
-              <p class="text-secondary text-caption">Xiamen University Malaysia</p>
+              <h1 class="text-h5 font-weight-600 mt-4">College Live Schedule</h1>
+              <p class="text-secondary text-caption">Xiamen University Malaysia — Student Portal</p>
             </div>
 
             <!-- Form Section -->

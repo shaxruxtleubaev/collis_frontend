@@ -34,6 +34,11 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/collis-app',
+      name: 'collis-app',
+      component: () => import('@/views/CollisAppView.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/'
     }
